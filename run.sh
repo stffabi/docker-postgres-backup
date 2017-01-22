@@ -14,9 +14,9 @@ MYSQL_PASS=${MYSQL_PASS:-${MYSQL_ENV_MYSQL_PASS}}
 [ -z "${MYSQL_HOST}" ] && { echo "=> MYSQL_HOST cannot be empty" && exit 1; }
 [ -z "${MYSQL_PORT}" ] && { echo "=> MYSQL_PORT cannot be empty" && exit 1; }
 [ -z "${MYSQL_USER}" ] && { echo "=> MYSQL_USER cannot be empty" && exit 1; }
-[ -z "${MYSQL_PASS}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
+[ ! -z "${MYSQL_PASS}" ] && { MYSQL_PASS="-p${MYSQL_PASS}"; }
 
-BACKUP_CMD="mysqldump -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USER} -p${MYSQL_PASS} ${EXTRA_OPTS} ${MYSQL_DB} > /backup/"'${BACKUP_NAME}'
+BACKUP_CMD="mysqldump -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USER} ${MYSQL_PASS} ${EXTRA_OPTS} ${MYSQL_DB} > /backup/"'${BACKUP_NAME}'
 
 echo "=> Creating backup script"
 rm -f /backup.sh
@@ -28,6 +28,7 @@ BACKUP_NAME=\$(date +\%Y.\%m.\%d.\%H\%M\%S).sql
 
 echo "=> Backup started: \${BACKUP_NAME}"
 if ${BACKUP_CMD} ;then
+    (cd /backup; rm latest.sql; ln -s \${BACKUP_NAME} latest.sql)
     echo "   Backup succeeded"
 else
     echo "   Backup failed"
@@ -76,7 +77,11 @@ elif [ -n "${INIT_RESTORE_LATEST}" ]; then
     ls -d -1 /backup/* | tail -1 | xargs /restore.sh
 fi
 
-echo "${CRON_TIME} /backup.sh >> /mysql_backup.log 2>&1" > /crontab.conf
-crontab  /crontab.conf
-echo "=> Running cron job"
-exec cron -f
+if [ -n "${NO_CRON}" ]; then
+    echo "NO_CRON set, exiting"
+else
+    echo "${CRON_TIME} /backup.sh >> /mysql_backup.log 2>&1" > /crontab.conf
+    crontab  /crontab.conf
+    echo "=> Running cron job"
+    exec cron -f
+fi
