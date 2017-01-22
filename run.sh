@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+set -e
 
 if [ "${MYSQL_ENV_MYSQL_PASS}" == "**Random**" ]; then
         unset MYSQL_ENV_MYSQL_PASS
@@ -21,14 +22,16 @@ BACKUP_CMD="mysqldump -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USER} ${MYSQL_PA
 echo "=> Creating backup script"
 rm -f /backup.sh
 cat <<EOF >> /backup.sh
-#!/bin/bash
+#!/bin/sh
+set -e
+
 MAX_BACKUPS=${MAX_BACKUPS}
 
 BACKUP_NAME=\$(date +\%Y.\%m.\%d.\%H\%M\%S).sql
 
 echo "=> Backup started: \${BACKUP_NAME}"
 if ${BACKUP_CMD} ;then
-    (cd /backup; rm latest.sql; ln -s \${BACKUP_NAME} latest.sql)
+    (cd /backup; rm -f latest.sql; ln -s \${BACKUP_NAME} latest.sql)
     echo "   Backup succeeded"
 else
     echo "   Backup failed"
@@ -50,9 +53,11 @@ chmod +x /backup.sh
 echo "=> Creating restore script"
 rm -f /restore.sh
 cat <<EOF >> /restore.sh
-#!/bin/bash
+#!/bin/sh
+set -e
+
 echo "=> Restore database from \$1"
-if mysql -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USER} -p${MYSQL_PASS} < \$1 ;then
+if mysql -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USER} ${MYSQL_PASS} < \$1 ;then
     echo "   Restore succeeded"
 else
     echo "   Restore failed"
@@ -83,5 +88,5 @@ else
     echo "${CRON_TIME} /backup.sh >> /mysql_backup.log 2>&1" > /crontab.conf
     crontab  /crontab.conf
     echo "=> Running cron job"
-    exec cron -f
+    exec crond -f
 fi

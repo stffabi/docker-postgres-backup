@@ -2,6 +2,8 @@
 
 This image runs mysqldump to backup data using cronjob to folder `/backup`. Backups are named with date and time, the latest backup is linked to `/backup/latest.sql`.
 
+Uses Alpine Linux for a small (36 MB) image.
+
 ## Usage:
 
     docker run -d \

@@ -1,8 +1,7 @@
-FROM ubuntu:trusty
+FROM alpine:3.5
 MAINTAINER Johan Swetzén <johan@swetzen.com>
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends mysql-client && \
+RUN apk add --no-cache mysql-client && \
     mkdir /backup
 
 ENV CRON_TIME="0 0 * * *" \
