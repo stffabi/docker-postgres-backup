@@ -43,7 +43,7 @@ if [ -n "\${MAX_BACKUPS}" ]; then
     do
         BACKUP_TO_BE_DELETED=\$(ls /backup/*.sql -1 | sort | head -n 1)
         echo "   Backup \${BACKUP_TO_BE_DELETED} is deleted"
-        rm -rf /backup/\${BACKUP_TO_BE_DELETED}
+        rm -rf \${BACKUP_TO_BE_DELETED}
     done
 fi
 echo "=> Backup done"
