@@ -21,6 +21,8 @@ Moreover, if you link `stffabi/mysql-backup` to a mariadb container with an alia
 
 ## Parameters
 
+    UID             the user id, default: 65534
+    GID             the group id, default: 65534
     MYSQL_HOST      the host/ip of your mysql database
     MYSQL_PORT      the port number of your mysql database
     MYSQL_USER      the username of your mysql database

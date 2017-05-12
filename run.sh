@@ -86,7 +86,6 @@ if [ -n "${NO_CRON}" ]; then
     echo "NO_CRON set, exiting"
 else
     echo "${CRON_TIME} /backup.sh >> /mysql_backup.log 2>&1" > /crontab.conf
-    crontab  /crontab.conf
     echo "=> Running cron job"
-    exec crond -f
+    exec su-exec $UID:$GID go-crond $UID:/crontab.conf
 fi
