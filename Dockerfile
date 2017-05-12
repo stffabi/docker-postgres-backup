@@ -1,5 +1,5 @@
 FROM alpine:3.5
-MAINTAINER Johan Swetzén <johan@swetzen.com>
+MAINTAINER Fabrizio Steiner <stffabi@users.noreply.github.com>
 
 RUN apk add --no-cache mysql-client && \
     mkdir /backup

@@ -1,6 +1,6 @@
 # mysql-backup
 
-This image runs mysqldump to backup data using cronjob to folder `/backup`. Backups are named with date and time, the latest backup is linked to `/backup/latest.sql`.
+This image runs mysqldump to backup data using cronjob to folder `/backup`. Backups are named with date and time, the latest backup is linked to `/backup/latest.sql.gz`.
 
 Uses Alpine Linux for a small (36 MB) image.
 
@@ -12,12 +12,12 @@ Uses Alpine Linux for a small (36 MB) image.
         --env MYSQL_USER=admin \
         --env MYSQL_PASS=password \
         --volume host.folder:/backup
-        jswetzen/mysql-backup
+        stffabi/mysql-backup
 
-Moreover, if you link `jswetzen/mysql-backup` to a mariadb container with an alias named mariadb, this image has defaults that will connect to `mariadb` on port 3306 with user `root` and no password.
+Moreover, if you link `stffabi/mysql-backup` to a mariadb container with an alias named mariadb, this image has defaults that will connect to `mariadb` on port 3306 with user `root` and no password.
 
     docker run -d -e MYSQL_ALLOW_EMPTY_PASSWORD=true --name mariadb mariadb
-    docker run -d --link mariadb:mariadb -v host.folder:/backup jswetzen/mysql-backup
+    docker run -d --link mariadb:mariadb -v host.folder:/backup stffabi/mysql-backup
 
 ## Parameters
 
@@ -41,8 +41,8 @@ See the list of backups, you can run:
 
 To restore database from a certain backup, simply run:
 
-    docker exec mysql-backup /restore.sh /backup/2015.08.06.171901.sql
+    docker exec mysql-backup /restore.sh /backup/2015.08.06.171901.sql.gz
 
 ## Support
 
-Add a [GitHub issue](https://github.com/jswetzen/mysql-backup/issues).
+Add a [GitHub issue](https://github.com/stffabi/docker-mysql-backup/issues).
