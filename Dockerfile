@@ -1,7 +1,7 @@
 FROM alpine:3.5
 MAINTAINER Fabrizio Steiner <stffabi@users.noreply.github.com>
 
-RUN apk add --no-cache mysql-client && \
+RUN apk add --no-cache mysql-client tzdata && \
     mkdir /backup
 
 ENV CRON_TIME="0 0 * * *" \
