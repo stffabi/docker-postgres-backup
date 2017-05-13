@@ -67,7 +67,8 @@ EOF
 chmod +x /restore.sh
 
 touch /mysql_backup.log
-tail -F /mysql_backup.log &
+chown $UID:$GID /mysql_backup.log
+exec su-exec $UID:$GID tail -F /mysql_backup.log &
 
 if [ -n "${INIT_BACKUP}" ]; then
     echo "=> Create a backup on startup"
