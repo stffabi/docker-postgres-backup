@@ -1,7 +1,7 @@
 FROM alpine:3.5
 MAINTAINER Fabrizio Steiner <stffabi@users.noreply.github.com>
 
-RUN apk add --no-cache mysql-client tzdata su-exec openssl && \
+RUN apk add --no-cache postgresql tzdata su-exec openssl && \
     mkdir /backup
 
 RUN GOCROND_VERSION=0.3.0 \
@@ -11,12 +11,12 @@ RUN GOCROND_VERSION=0.3.0 \
 ENV UID=65534 \
     GID=65534 \
     CRON_TIME="0 0 * * *" \
-    MYSQL_DB="--all-databases" \
-    MYSQL_HOST="mariadb" \
-    MYSQL_PORT="3306" \
-    MYSQL_USER="root" \
-    MYSQL_PASS="" \
-    EXTRA_OPTS="-A -R -E --triggers --single-transaction --flush-privileges"
+    PG_DB="postgres" \
+    PG_HOST="postgres" \
+    PG_PORT="5432" \
+    PG_USER="root" \
+    PG_PASS="" \
+    EXTRA_OPTS="--inserts"
 
 ADD run.sh /run.sh
 
